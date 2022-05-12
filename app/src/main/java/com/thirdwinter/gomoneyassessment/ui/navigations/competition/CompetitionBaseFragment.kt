@@ -5,56 +5,66 @@ import androidx.fragment.app.Fragment
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
+import androidx.navigation.fragment.findNavController
+import androidx.navigation.fragment.navArgs
+import com.google.android.material.tabs.TabLayoutMediator
 import com.thirdwinter.gomoneyassessment.R
+import com.thirdwinter.gomoneyassessment.databinding.FragmentCompetitionBaseBinding
+import com.thirdwinter.gomoneyassessment.ui.CompetitionPagerAdapter
+import com.thirdwinter.gomoneyassessment.ui.navigations.TeamSquadInterface
+import dagger.hilt.android.AndroidEntryPoint
 
-// TODO: Rename parameter arguments, choose names that match
-// the fragment initialization parameters, e.g. ARG_ITEM_NUMBER
-private const val ARG_PARAM1 = "param1"
-private const val ARG_PARAM2 = "param2"
+@AndroidEntryPoint
+class CompetitionBaseFragment : Fragment(), TeamSquadInterface {
 
-/**
- * A simple [Fragment] subclass.
- * Use the [CompetitionBaseFragment.newInstance] factory method to
- * create an instance of this fragment.
- */
-class CompetitionBaseFragment : Fragment() {
-    // TODO: Rename and change types of parameters
-    private var param1: String? = null
-    private var param2: String? = null
-
-    override fun onCreate(savedInstanceState: Bundle?) {
-        super.onCreate(savedInstanceState)
-        arguments?.let {
-            param1 = it.getString(ARG_PARAM1)
-            param2 = it.getString(ARG_PARAM2)
-        }
-    }
-
+    lateinit var binding: FragmentCompetitionBaseBinding
+    lateinit var pagerAdapter: CompetitionPagerAdapter
+    val args: CompetitionBaseFragmentArgs by navArgs()
     override fun onCreateView(
         inflater: LayoutInflater, container: ViewGroup?,
         savedInstanceState: Bundle?
-    ): View? {
+    ): View {
         // Inflate the layout for this fragment
-        return inflater.inflate(R.layout.fragment_competition_base, container, false)
-    }
+        binding = FragmentCompetitionBaseBinding.inflate(layoutInflater)
+        pagerAdapter = CompetitionPagerAdapter(requireActivity())
 
-    companion object {
-        /**
-         * Use this factory method to create a new instance of
-         * this fragment using the provided parameters.
-         *
-         * @param param1 Parameter 1.
-         * @param param2 Parameter 2.
-         * @return A new instance of fragment CompetitionBaseFragment.
-         */
-        // TODO: Rename and change types and number of parameters
-        @JvmStatic
-        fun newInstance(param1: String, param2: String) =
-            CompetitionBaseFragment().apply {
-                arguments = Bundle().apply {
-                    putString(ARG_PARAM1, param1)
-                    putString(ARG_PARAM2, param2)
+        binding.competitionPagers.adapter = pagerAdapter.apply {
+            pages = listOf(
+                CompetitionMatches(args.id),
+                CompetitionStandings(args.id),
+                CompetitionTeams(args.id).apply {
+                    teamSquadInterface = this@CompetitionBaseFragment
+                },
+                CompetitionScorers(args.id)
+            )
+        }
+        val mediator =
+            TabLayoutMediator(binding.competitionTab, binding.competitionPagers) { tab, position ->
+                when (position) {
+                    0 ->
+                        tab.text = "Matches"
+                    1 ->
+                        tab.text = "Standings"
+                    2 ->
+                        tab.text = "Teams"
+                    3 ->
+                        tab.text = "Scorers"
+
                 }
             }
+
+        mediator.attach()
+
+        return binding.root
     }
+
+    override fun onClickItem(teamId: Int) {
+        findNavController().navigate(
+            CompetitionBaseFragmentDirections.actionCompetitionBaseFragmentToTeamSquadModal(
+                teamId
+            )
+        )
+    }
+
+
 }

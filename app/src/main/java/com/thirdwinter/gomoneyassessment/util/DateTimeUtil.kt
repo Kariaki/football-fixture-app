@@ -1,30 +1,35 @@
 package com.thirdwinter.gomoneyassessment.util
 
 import android.text.format.DateUtils
+import java.sql.Date
+import java.sql.Timestamp
+import java.text.DateFormat
+import java.text.ParseException
 import java.text.SimpleDateFormat
 import java.util.*
 
 
 object DateTimeUtils {
 
-    fun formatDate(date: Date): String {
-        return SimpleDateFormat("yyyy-MM-dd'T'HH:mm:ss'Z'", Locale.getDefault())
-            .format(date)
+
+    fun getDate(utcDate: String): String {
+        val split = utcDate.split("T")
+        return split[0]
     }
 
-    fun toTimeStamp(date: String): Date? {
-        return SimpleDateFormat("EEE, MMM d, yyyy", Locale.getDefault()).parse(date)
+    fun getTime(utcDate: String): String {
+        val split = utcDate.split("T")
+        return split[1].dropLast(4)
     }
 
-    fun toDate(date: String?): Date? {
-        try {
-            return SimpleDateFormat("yyyy-MM-dd'T'HH:mm:ss'Z'", Locale.getDefault()).parse(
-                date ?: ""
-            )
-        } catch (e: Throwable) {
 
-            return null
-        }
+    fun getDate(timeStamp: Long): String {
+        val stamp = Timestamp(timeStamp)
+        val date = Date(stamp.time)
+        val f: DateFormat = SimpleDateFormat("yyyy-MM-dd")
+
+        return f.format(date)
     }
+
 
 }

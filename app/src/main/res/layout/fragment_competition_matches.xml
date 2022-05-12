@@ -5,10 +5,17 @@
     android:layout_height="match_parent"
     tools:context=".ui.navigations.competition.CompetitionMatches">
 
-    <!-- TODO: Update blank fragment layout -->
-    <TextView
+
+    <androidx.recyclerview.widget.RecyclerView
         android:layout_width="match_parent"
+        android:id="@+id/matchesRecyclerView"
         android:layout_height="match_parent"
-        android:text="@string/hello_blank_fragment" />
+        />
+    <ProgressBar
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:id="@+id/loader"
+        android:layout_gravity="center"
+        />
 
 </FrameLayout>

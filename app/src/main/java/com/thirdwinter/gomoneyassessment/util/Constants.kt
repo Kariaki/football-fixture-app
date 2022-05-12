@@ -7,4 +7,8 @@ object Constants {
     val baseUrl1 = "https://jsonplaceholder.typicode.com/"
 
     const val apiKey="d179fe0500df408796d8878bcbcffa0a"
+
+    const val COMPETITION_ID=2001
+    const val TEAM_ID=86
+
 }

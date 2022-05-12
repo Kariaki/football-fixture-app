@@ -1,8 +1,7 @@
 package com.thirdwinter.gomoneyassessment.db.architecture.dao.api
 
-import com.thirdwinter.gomoneyassessment.db.architecture.model.response.*
+import com.thirdwinter.gomoneyassessment.db.architecture.dao.api.response.*
 import com.thirdwinter.gomoneyassessment.util.Constants.apiKey
-import io.reactivex.Observable
 import retrofit2.Response
 import retrofit2.http.GET
 import retrofit2.http.Headers
@@ -55,10 +54,9 @@ interface FootballApi {
     @Headers("X-Auth-Token: $apiKey")
     suspend fun getTodayMatch(): Response<MatchResponse>
 
-    @GET("competition/{competitionId}/scorers")
+    @GET("competitions/{competitionId}/scorers")
     @Headers("X-Auth-Token: $apiKey")
-    suspend fun getCompetitionScorers(competitionId: Int?): Response<ScorersResponse>
-
+    suspend fun getCompetitionScorers(@Path("competitionId") competitionId: Int?): Response<ScorersResponse>
 
 
 }

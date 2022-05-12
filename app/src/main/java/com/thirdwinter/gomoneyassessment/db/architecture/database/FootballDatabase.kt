@@ -7,22 +7,20 @@ import androidx.room.RoomDatabase
 import androidx.room.TypeConverters
 import com.thirdwinter.gomoneyassessment.db.architecture.dao.FootballDao
 import com.thirdwinter.gomoneyassessment.db.architecture.database.converters.*
-import com.thirdwinter.gomoneyassessment.db.architecture.model.Competition
-import com.thirdwinter.gomoneyassessment.db.architecture.model.Match
-import com.thirdwinter.gomoneyassessment.db.architecture.model.Squad
-import com.thirdwinter.gomoneyassessment.db.architecture.model.Team
+import com.thirdwinter.gomoneyassessment.db.architecture.model.*
 
 //TODO DATABASE TABLES OR ENTITIES
 @Database(
-    entities = [Competition::class, Match::class, Team::class, Squad::class],
+    entities = [Competition::class, Match::class, Team::class, Squad::class,Scorer::class,Table::class],
     exportSchema = false,
-    version = 3
+    version = 5
 )
 @TypeConverters(
     CompetitionConverter::class,
     ScoreConverter::class,
     TeamConverter::class,
     DateConverter::class,
+    PlayerConverter::class,
     RefereeConverter::class
 )
 abstract class FootballDatabase : RoomDatabase() {

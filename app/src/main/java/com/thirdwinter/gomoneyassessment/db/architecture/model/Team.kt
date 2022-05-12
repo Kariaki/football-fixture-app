@@ -6,6 +6,7 @@ import androidx.recyclerview.widget.DiffUtil
 import androidx.room.Entity
 import androidx.room.PrimaryKey
 import com.google.gson.annotations.SerializedName
+import com.kcoding.recyclerview_helper.SuperEntity
 
 
 @Entity
@@ -16,7 +17,7 @@ data class Team(
     val crestUrl: String?,
     val shortName: String?,
     val tla: String?
-) : Parcelable {
+) : SuperEntity(), Parcelable {
     constructor(source: Parcel) : this(
         source.readValue(Int::class.java.classLoader) as Int?,
         source.readValue(Int::class.java.classLoader) as Int,

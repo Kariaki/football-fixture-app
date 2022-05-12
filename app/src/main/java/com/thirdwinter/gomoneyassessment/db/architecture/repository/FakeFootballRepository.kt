@@ -2,57 +2,81 @@ package com.thirdwinter.gomoneyassessment.db.architecture.repository
 
 import androidx.lifecycle.LiveData
 import com.thirdwinter.gomoneyassessment.db.architecture.model.*
+import java.util.*
 
 class FakeFootballRepository:Repository {
-    override suspend fun getAllCompetitions(): LiveData<List<Competition>> {
+
+    //TODO FOR UNIT TEST
+
+    override fun getAllCompetitions(): LiveData<List<Competition>> {
         TODO("Not yet implemented")
     }
 
-    override suspend fun getCompetitionMatches(competitionId: Int): LiveData<List<Match>> {
+    override fun getCompetitionMatches(competitionId: Int): LiveData<List<Match>> {
         TODO("Not yet implemented")
     }
 
-    override suspend fun getCompetitionTeams(competitionId: Int): LiveData<List<Team>> {
+    override fun getCompetitionTeams(competitionId: Int): LiveData<List<Team>> {
         TODO("Not yet implemented")
     }
 
-    override suspend fun getTeamSquad(teamId: Int): LiveData<List<Squad>> {
+    override fun getTeamSquad(teamId: Int): LiveData<List<Squad>> {
         TODO("Not yet implemented")
     }
 
-    override suspend fun getCompetitionScorers(competitionId: Int): LiveData<List<Scorer>> {
+    override fun getCompetitionScorers(competitionId: Int): LiveData<List<Scorer>> {
         TODO("Not yet implemented")
     }
 
-    override suspend fun getCompetitionTable(competitionId: Int): LiveData<List<Table>> {
+    override fun getCompetitionTable(competitionId: Int): LiveData<List<Table>> {
         TODO("Not yet implemented")
     }
 
-    override suspend fun getMatchesForToday(): LiveData<List<Table>> {
+    override fun getMatchesForToday(date: String): LiveData<List<Match>> {
         TODO("Not yet implemented")
     }
 
-    override suspend fun insertCompetitions(onError: () -> Unit) {
+    override suspend fun insertCompetitions(onSuccess: () -> Unit, onError: () -> Unit) {
         TODO("Not yet implemented")
     }
 
-    override suspend fun insertTodaysMatch(onError: () -> Unit) {
+    override suspend fun insertTodaysMatch(onSuccess: () -> Unit, onError: () -> Unit) {
         TODO("Not yet implemented")
     }
 
-    override suspend fun insertCompetitionMatches(competitionId: Int, onError: () -> Unit) {
+    override suspend fun insertCompetitionMatches(
+        competitionId: Int,
+        onSuccess: () -> Unit,
+        onError: () -> Unit
+    ) {
         TODO("Not yet implemented")
     }
 
-    override suspend fun insertCompetitionTeams(competitionId: Int, onError: () -> Unit) {
+    override suspend fun insertCompetitionTeams(
+        competitionId: Int,
+        onSuccess: () -> Unit,
+        onError: () -> Unit
+    ) {
         TODO("Not yet implemented")
     }
 
-    override suspend fun insertCompetitionTables(competitionId: Int, onError: () -> Unit) {
+    override suspend fun insertCompetitionTables(
+        competitionId: Int,
+        onSuccess: () -> Unit,
+        onError: () -> Unit
+    ) {
         TODO("Not yet implemented")
     }
 
-    override suspend fun insertTeamSquad(teamId: Int, onError: () -> Unit) {
+    override suspend fun insertCompetitionScorers(
+        competitionId: Int,
+        onSuccess: () -> Unit,
+        onError: () -> Unit
+    ) {
+        TODO("Not yet implemented")
+    }
+
+    override suspend fun insertTeamSquad(teamId: Int, onSuccess: () -> Unit, onError: () -> Unit) {
         TODO("Not yet implemented")
     }
 

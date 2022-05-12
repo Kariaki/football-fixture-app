@@ -1,4 +1,4 @@
-package com.thirdwinter.gomoneyassessment.db.architecture.model.response
+package com.thirdwinter.gomoneyassessment.db.architecture.dao.api.response
 
 import com.thirdwinter.gomoneyassessment.db.architecture.model.Competition
 

@@ -4,6 +4,7 @@ import androidx.recyclerview.widget.DiffUtil
 import androidx.room.Entity
 import androidx.room.PrimaryKey
 import com.google.gson.annotations.SerializedName
+import com.kcoding.recyclerview_helper.SuperEntity
 
 @Entity
 data class Table(
@@ -19,4 +20,4 @@ data class Table(
     val goalsFor: Int?,
     val goalsAgainst: Int?,
     val goalDifference: Int?
-)
+):SuperEntity()

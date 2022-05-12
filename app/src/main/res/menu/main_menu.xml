@@ -1,4 +1,14 @@
 <?xml version="1.0" encoding="utf-8"?>
 <menu xmlns:android="http://schemas.android.com/apk/res/android">
-  
+
+
+    <item
+        android:id="@+id/todaysMatchFragment"
+        android:icon="@drawable/football_field"
+        android:title="@string/fixures" />
+    <item
+        android:id="@+id/competitionsFragment"
+        android:icon="@drawable/stage"
+        android:title="@string/competitions" />
+
 </menu>

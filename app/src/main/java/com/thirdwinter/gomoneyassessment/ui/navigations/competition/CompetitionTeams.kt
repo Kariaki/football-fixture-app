@@ -1,60 +1,106 @@
 package com.thirdwinter.gomoneyassessment.ui.navigations.competition
 
+import android.content.Context
 import android.os.Bundle
 import androidx.fragment.app.Fragment
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
+import androidx.fragment.app.viewModels
+import androidx.lifecycle.lifecycleScope
+import androidx.recyclerview.widget.LinearLayoutManager
+import com.bumptech.glide.Glide
+import com.data.recyclerview_helper.GeneralAdapter
+import com.data.recyclerview_helper.MainViewHolder
+import com.data.recyclerview_helper.SuperClickListener
+import com.kcoding.recyclerview_helper.SuperEntity
 import com.thirdwinter.gomoneyassessment.R
+import com.thirdwinter.gomoneyassessment.databinding.CompetitionTeamComponentBinding
+import com.thirdwinter.gomoneyassessment.databinding.FragmentCompetitionTeamsBinding
+import com.thirdwinter.gomoneyassessment.db.architecture.model.Team
+import com.thirdwinter.gomoneyassessment.db.architecture.viewmodels.FootballViewModel
+import com.thirdwinter.gomoneyassessment.ui.navigations.TeamSquadInterface
+import dagger.hilt.android.AndroidEntryPoint
 
-// TODO: Rename parameter arguments, choose names that match
-// the fragment initialization parameters, e.g. ARG_ITEM_NUMBER
-private const val ARG_PARAM1 = "param1"
-private const val ARG_PARAM2 = "param2"
+@AndroidEntryPoint
+class CompetitionTeams(val competitionId: Int) : Fragment(), SuperClickListener,
+    GeneralAdapter.ViewHolderPlug {
 
-/**
- * A simple [Fragment] subclass.
- * Use the [CompetitionTeams.newInstance] factory method to
- * create an instance of this fragment.
- */
-class CompetitionTeams : Fragment() {
-    // TODO: Rename and change types of parameters
-    private var param1: String? = null
-    private var param2: String? = null
+    private val viewModel: FootballViewModel by viewModels()
+    var teamList: List<SuperEntity> = listOf()
+    val generalAdapter = GeneralAdapter()
+    lateinit var binding: FragmentCompetitionTeamsBinding
 
+    lateinit var teamSquadInterface: TeamSquadInterface
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
-        arguments?.let {
-            param1 = it.getString(ARG_PARAM1)
-            param2 = it.getString(ARG_PARAM2)
+        lifecycleScope.launchWhenStarted {
+            viewModel.insertCompetitionTeams(competitionId)
         }
+
     }
 
     override fun onCreateView(
         inflater: LayoutInflater, container: ViewGroup?,
         savedInstanceState: Bundle?
-    ): View? {
-        // Inflate the layout for this fragment
-        return inflater.inflate(R.layout.fragment_competition_teams, container, false)
+    ): View {
+
+        binding = FragmentCompetitionTeamsBinding.inflate(layoutInflater)
+        generalAdapter.apply {
+            superClickListener = this@CompetitionTeams
+            viewHolderPlug = this@CompetitionTeams
+        }
+
+        binding.teamRecyclerView.apply {
+            layoutManager = LinearLayoutManager(requireContext())
+            adapter = generalAdapter
+        }
+
+        viewModel.getTeamsForCompetition(competitionId).observe(viewLifecycleOwner) {
+            generalAdapter.items = it
+            teamList = it
+            generalAdapter.notifyDataSetChanged()
+
+        }
+
+
+        viewModel.loadState.observe(viewLifecycleOwner) {
+        }
+
+        return binding.root
     }
 
-    companion object {
-        /**
-         * Use this factory method to create a new instance of
-         * this fragment using the provided parameters.
-         *
-         * @param param1 Parameter 1.
-         * @param param2 Parameter 2.
-         * @return A new instance of fragment CompetitionTeams.
-         */
-        // TODO: Rename and change types and number of parameters
-        @JvmStatic
-        fun newInstance(param1: String, param2: String) =
-            CompetitionTeams().apply {
-                arguments = Bundle().apply {
-                    putString(ARG_PARAM1, param1)
-                    putString(ARG_PARAM2, param2)
-                }
+
+    override fun setPlug(group: ViewGroup, viewType: Int): MainViewHolder {
+        val itemView = LayoutInflater.from(requireContext())
+            .inflate(R.layout.competition_team_component, group, false)
+        return viewHolder(itemView)
+    }
+
+    override fun onClickItem(position: Int) {
+        val clickedTeam = teamList[position] as Team
+        teamSquadInterface.onClickItem(clickedTeam.id)
+    }
+
+    fun viewHolder(view: View): MainViewHolder = object : MainViewHolder(view) {
+        val binding = CompetitionTeamComponentBinding.bind(view)
+        override fun bindPostType(
+            types: SuperEntity,
+            context: Context,
+            clickListener: SuperClickListener
+        ) {
+            val team = types as Team
+
+            Glide.with(context).load(
+                team
+                    .crestUrl
+            ).placeholder(R.drawable.ic_launcher_background).into(binding.crestUrl)
+            binding.name.text = team.name
+
+            binding.root.setOnClickListener {
+                clickListener.onClickItem(layoutPosition)
             }
+        }
+
     }
 }

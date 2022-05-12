@@ -1,60 +1,121 @@
 package com.thirdwinter.gomoneyassessment.ui.navigations
 
+import android.content.Context
 import android.os.Bundle
 import androidx.fragment.app.Fragment
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
+import androidx.fragment.app.viewModels
+import androidx.lifecycle.lifecycleScope
+import androidx.recyclerview.widget.LinearLayoutManager
+import com.bumptech.glide.Glide
+import com.data.recyclerview_helper.GeneralAdapter
+import com.data.recyclerview_helper.MainViewHolder
+import com.data.recyclerview_helper.SuperClickListener
+import com.google.android.material.snackbar.Snackbar
+import com.kcoding.recyclerview_helper.SuperEntity
 import com.thirdwinter.gomoneyassessment.R
+import com.thirdwinter.gomoneyassessment.databinding.CompetitionComponentBinding
+import com.thirdwinter.gomoneyassessment.databinding.FragmentCompetitionsBinding
+import com.thirdwinter.gomoneyassessment.databinding.FragmentTodaysMatchBinding
+import com.thirdwinter.gomoneyassessment.databinding.TodaysMatchComponentBinding
+import com.thirdwinter.gomoneyassessment.db.architecture.model.Competition
+import com.thirdwinter.gomoneyassessment.db.architecture.model.Match
+import com.thirdwinter.gomoneyassessment.db.architecture.viewmodels.FootballViewModel
+import com.thirdwinter.gomoneyassessment.util.DateTimeUtils
+import com.thirdwinter.gomoneyassessment.util.LoadState
+import dagger.hilt.android.AndroidEntryPoint
 
-// TODO: Rename parameter arguments, choose names that match
-// the fragment initialization parameters, e.g. ARG_ITEM_NUMBER
-private const val ARG_PARAM1 = "param1"
-private const val ARG_PARAM2 = "param2"
+@AndroidEntryPoint
+class TodaysMatchFragment : Fragment(), SuperClickListener, GeneralAdapter.ViewHolderPlug {
 
-/**
- * A simple [Fragment] subclass.
- * Use the [TodaysMatchFragment.newInstance] factory method to
- * create an instance of this fragment.
- */
-class TodaysMatchFragment : Fragment() {
-    // TODO: Rename and change types of parameters
-    private var param1: String? = null
-    private var param2: String? = null
+    var competitionList: List<SuperEntity> = listOf()
+    val generalAdapter = GeneralAdapter()
+    val viewModel: FootballViewModel by viewModels()
 
+    lateinit var binding: FragmentTodaysMatchBinding
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
-        arguments?.let {
-            param1 = it.getString(ARG_PARAM1)
-            param2 = it.getString(ARG_PARAM2)
+
+        lifecycleScope.launchWhenStarted {
+            viewModel.insertMatchesForToday()
         }
     }
 
     override fun onCreateView(
         inflater: LayoutInflater, container: ViewGroup?,
         savedInstanceState: Bundle?
-    ): View? {
+    ): View {
         // Inflate the layout for this fragment
-        return inflater.inflate(R.layout.fragment_todays_match, container, false)
-    }
+        binding = FragmentTodaysMatchBinding.inflate(layoutInflater)
 
-    companion object {
-        /**
-         * Use this factory method to create a new instance of
-         * this fragment using the provided parameters.
-         *
-         * @param param1 Parameter 1.
-         * @param param2 Parameter 2.
-         * @return A new instance of fragment TodaysMatchFragment.
-         */
-        // TODO: Rename and change types and number of parameters
-        @JvmStatic
-        fun newInstance(param1: String, param2: String) =
-            TodaysMatchFragment().apply {
-                arguments = Bundle().apply {
-                    putString(ARG_PARAM1, param1)
-                    putString(ARG_PARAM2, param2)
+        generalAdapter.apply {
+            superClickListener = this@TodaysMatchFragment
+            viewHolderPlug = this@TodaysMatchFragment
+        }
+
+        binding.matchRecyclerView.apply {
+            layoutManager = LinearLayoutManager(requireContext())
+            adapter = generalAdapter
+        }
+        val todaysDate = DateTimeUtils.getDate(System.currentTimeMillis())
+
+        viewModel.getMatchesForToday(todaysDate).observe(viewLifecycleOwner) {
+            generalAdapter.items = it
+            competitionList = it
+            generalAdapter.notifyDataSetChanged()
+        }
+
+        viewModel.loadState.observe(viewLifecycleOwner) {
+            when (it) {
+                LoadState.DONE -> binding.loader.visibility = View.GONE
+                LoadState.LOADING -> binding.loader.visibility = View.VISIBLE
+                LoadState.ERROR -> {
+                    binding.loader.visibility = View.GONE
+                    Snackbar.make(binding.root, "unable to reach server", Snackbar.LENGTH_SHORT)
+                        .show()
+                }
+                else -> {
+                    binding.loader.visibility = View.VISIBLE
                 }
             }
+        }
+
+
+        return binding.root
     }
+
+    override fun setPlug(group: ViewGroup, viewType: Int): MainViewHolder {
+        val itemView = LayoutInflater.from(requireContext())
+            .inflate(R.layout.todays_match_component, group, false)
+
+        return viewHolder(itemView)
+    }
+
+    fun viewHolder(view: View): MainViewHolder = object : MainViewHolder(view) {
+        val binding = TodaysMatchComponentBinding.bind(view)
+        override fun bindPostType(
+            types: SuperEntity,
+            context: Context,
+            clickListener: SuperClickListener
+        ) {
+            val match = types as Match
+            val homeTeam = match.homeTeam
+            val awayTeam = match.awayTeam
+            val competition = match.competition!!
+            binding.competitionName.text = competition.name
+            binding.team1Name.text = homeTeam?.name
+            // Glide.with(context).load(homeTeam?.crestUrl).placeholder(R.drawable.ic_launcher_background).into(binding.team1image)
+
+            binding.team2Name.text = awayTeam?.name
+            //  Glide.with(context).load(awayTeam?.crestUrl).placeholder(R.drawable.ic_launcher_background).into(binding.team2Image)
+
+        }
+    }
+
+    override fun onClickItem(position: Int) {
+
+    }
+
 }

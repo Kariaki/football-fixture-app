@@ -1,6 +1,46 @@
 <?xml version="1.0" encoding="utf-8"?>
 <navigation xmlns:android="http://schemas.android.com/apk/res/android"
-             xmlns:app="http://schemas.android.com/apk/res-auto"
-             android:id="@+id/main_navigation_graph">
+    xmlns:app="http://schemas.android.com/apk/res-auto"
+    xmlns:tools="http://schemas.android.com/tools"
+    android:id="@+id/main_navigation_graph"
+    app:startDestination="@id/competitionsFragment">
 
+    <fragment
+        android:id="@+id/competitionsFragment"
+        android:name="com.thirdwinter.gomoneyassessment.ui.navigations.CompetitionsFragment"
+        android:label="Competitions"
+        tools:layout="@layout/fragment_competitions">
+        <action
+            android:id="@+id/action_competitionsFragment_to_competitionBaseFragment"
+            app:destination="@id/competitionBaseFragment" />
+    </fragment>
+    <fragment
+        android:id="@+id/todaysMatchFragment"
+        android:name="com.thirdwinter.gomoneyassessment.ui.navigations.TodaysMatchFragment"
+        android:label="Todays matches"
+        tools:layout="@layout/fragment_todays_match" />
+    <fragment
+        android:id="@+id/competitionBaseFragment"
+        android:name="com.thirdwinter.gomoneyassessment.ui.navigations.competition.CompetitionBaseFragment"
+        android:label="{name}"
+        tools:layout="@layout/fragment_competition_base">
+        <argument
+            android:name="id"
+            app:argType="integer" />
+        <argument
+            android:name="name"
+            app:argType="string" />
+        <action
+            android:id="@+id/action_competitionBaseFragment_to_teamSquadModal"
+            app:destination="@id/teamSquadModal" />
+    </fragment>
+    <dialog
+        android:id="@+id/teamSquadModal"
+        android:name="com.thirdwinter.gomoneyassessment.ui.navigations.modal.TeamSquadModal"
+        android:label="fragment_team_squad_modal"
+        tools:layout="@layout/fragment_team_squad_modal">
+        <argument
+            android:name="teamId"
+            app:argType="integer" />
+    </dialog>
 </navigation>

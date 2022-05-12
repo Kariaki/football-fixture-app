@@ -4,6 +4,7 @@ import androidx.recyclerview.widget.DiffUtil
 import androidx.room.Entity
 import androidx.room.PrimaryKey
 import com.google.gson.annotations.SerializedName
+import com.kcoding.recyclerview_helper.SuperEntity
 import com.thirdwinter.gomoneyassessment.db.architecture.model.score.Score
 import com.thirdwinter.gomoneyassessment.util.DateTimeUtils
 import java.util.*
@@ -20,5 +21,6 @@ data class Match(
     val homeTeam: Team?,
     val awayTeam: Team?,
     val referees: List<Referee>?,
-    val date: Date? = DateTimeUtils.toDate(utcDate)
-)
+    var date: String?,
+    var time: String?
+):SuperEntity()

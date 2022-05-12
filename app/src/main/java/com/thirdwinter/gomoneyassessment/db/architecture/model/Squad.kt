@@ -5,6 +5,7 @@ import androidx.room.Entity
 import androidx.room.Ignore
 import androidx.room.PrimaryKey
 import com.google.gson.annotations.SerializedName
+import com.kcoding.recyclerview_helper.SuperEntity
 
 @Entity
 data class Squad(
@@ -12,4 +13,4 @@ data class Squad(
     val name: String?,
     val position: String?,
     var teamId: Int?
-)
+) : SuperEntity()
